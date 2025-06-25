@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kuis IPA SMP Zat Aditif dan Zat Adiktif</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    input[type="text"] {
+      width: 300px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    #timer {
+      font-weight: bold;
+      color: red;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Kuis IPA SMP</h2>
+  <h2>By: Torus Manuntun Nababan, M.Pd</h2>
+  <h2>Materi: Zat Adidtif dan Zat Adiktif</h2>
+  <!-- Form Identitas -->
+  <div id="identityForm">
+    <h3>Silakan isi identitas terlebih dahulu:</h3>
+    <label>Nama:
+      <input type="text" id="nama" required>
+    </label>
+    <label>Kelas:
+      <input type="text" id="kelas" required>
+    </label>
+    <label>Tahun Ajaran:
+      <input type="text" id="tahun" required>
+    </label>
+    <label>Nama Sekolah:
+      <input type="text" id="sekolah" required>
+    </label>
+    <button onclick="startQuiz()">Mulai Kuis</button>
+  </div>
+
+  <!-- Timer -->
+  <div id="timer" class="hidden"></div>
+
+  <!-- Form Soal -->
+  <form id="quizForm" class="hidden">
+    <div id="questionsContainer"></div>
+    <button type="button" onclick="submitQuiz()">Selesai dan Lihat Skor</button>
+  </form>
+
+  <div id="result" class="hidden"></div>
+
+  <script>
+    const questions = [
+      { question: "1. Zat aditif adalah...", options: ["Zat yang menyebabkan kecanduan", "Zat yang ditambahkan pada makanan untuk tujuan tertentu", "Zat yang membahayakan tubuh", "Zat hasil metabolisme"], answer: "Zat yang ditambahkan pada makanan untuk tujuan tertentu" },
+    { question: "2. Contoh zat aditif alami adalah...", options: ["Monosodium glutamat", "Pewarna tekstil", "Kunyit", "Sakarin"], answer: "Kunyit" },
+    { question: "3. Pewarna alami yang berasal dari daun pandan disebut...", options: ["Klorofil", "Kunyit", "Karamel", "Tartrazin"], answer: "Klorofil" },
+    { question: "4. Zat aditif buatan digunakan karena...", options: ["Tidak memiliki efek samping", "Lebih murah dan tahan lama", "Berbahaya", "Selalu lebih sehat"], answer: "Lebih murah dan tahan lama" },
+    { question: "5. Contoh zat aditif buatan yang digunakan sebagai pemanis adalah...", options: ["Sakarin", "Cuka", "Asam benzoat", "Kunyit"], answer: "Sakarin" },
+    { question: "6. Zat adiktif adalah zat yang...", options: ["Menguatkan daya tahan tubuh", "Menambah gizi makanan", "Menimbulkan kecanduan", "Menambah cita rasa makanan"], answer: "Menimbulkan kecanduan" },
+    { question: "7. Rokok mengandung zat adiktif berupa...", options: ["Tar dan nikotin", "Vitamin dan protein", "Gula dan karbohidrat", "Alkohol dan air"], answer: "Tar dan nikotin" },
+    { question: "8. Dampak negatif dari konsumsi alkohol berlebihan adalah...", options: ["Meningkatkan daya tahan tubuh", "Merusak hati", "Menyehatkan pencernaan", "Memperkuat otot"], answer: "Merusak hati" },
+    { question: "9. Pengawet makanan buatan yang sering digunakan adalah...", options: ["Garam", "Asam benzoat", "Jahe", "Daun salam"], answer: "Asam benzoat" },
+    { question: "10. Contoh zat adiktif yang legal tetapi diawasi penggunaannya adalah...", options: ["Kafein", "Sabu-sabu", "Heroin", "Kokain"], answer: "Kafein" },
+    { question: "11. Zat aditif yang digunakan untuk mengawetkan makanan disebut...", options: ["Pemanis", "Pengawet", "Pewarna", "Perisa"], answer: "Pengawet" },
+    { question: "12. MSG adalah singkatan dari...", options: ["Monosodium Glukosa", "Monosodium Garam", "Monosodium Glutamat", "Magnesium Sulfat"], answer: "Monosodium Glutamat" },
+    { question: "13. Bahan alami yang digunakan sebagai pengawet tradisional adalah...", options: ["Asam benzoat", "Natrium nitrit", "Garam", "Tartrazin"], answer: "Garam" },
+    { question: "14. Contoh pewarna buatan yang biasa digunakan dalam makanan adalah...", options: ["Kunyit", "Daun suji", "Tartrazin", "Daun pandan"], answer: "Tartrazin" },
+    { question: "15. Zat adiktif berbahaya yang menyebabkan gangguan sistem saraf pusat adalah...", options: ["MSG", "Tartrazin", "Heroin", "Asam sitrat"], answer: "Heroin" },
+    { question: "16. Salah satu efek dari zat adiktif adalah...", options: ["Menambah berat badan", "Menurunkan nafsu makan", "Kecanduan dan ketergantungan", "Menyegarkan tubuh"], answer: "Kecanduan dan ketergantungan" },
+    { question: "17. Zat adiktif yang legal tetapi harus dikontrol penggunaannya karena bisa menimbulkan efek samping jika berlebihan adalah...", options: ["Air putih", "Vitamin C", "Kafein", "Gula"], answer: "Kafein" },
+    { question: "18. Kelebihan penggunaan zat aditif buatan dapat menyebabkan...", options: ["Menambah nilai gizi", "Kecerdasan meningkat", "Gangguan kesehatan", "Performa fisik meningkat"], answer: "Gangguan kesehatan" },
+    { question: "19. Salah satu contoh zat adiktif alami yang digunakan manusia adalah...", options: ["Nikotin", "Kafein", "Tartrazin", "Sakarin"], answer: "Kafein" },
+    { question: "20. Zat adiktif buatan yang tergolong narkotika dan sangat berbahaya adalah...", options: ["Teh", "Kopi", "Sabu-sabu", "Minuman energi"], answer: "Sabu-sabu" }
+  ];
+
+    let quizTimer;
+    let countdownInterval;
+    const timeLimit = 20 * 60 * 1000; // 20 menit
+
+    function startQuiz() {
+      const nama = document.getElementById('nama').value;
+      const kelas = document.getElementById('kelas').value;
+      const tahun = document.getElementById('tahun').value;
+      const sekolah = document.getElementById('sekolah').value;
+
+      if (!nama || !kelas || !tahun || !sekolah) {
+        alert("Harap lengkapi semua data identitas.");
+        return;
+      }
+
+      document.getElementById('identityForm').classList.add('hidden');
+      document.getElementById('quizForm').classList.remove('hidden');
+      document.getElementById('timer').classList.remove('hidden');
+
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = "";
+      questions.forEach((q, index) => {
+        const div = document.createElement('div');
+        div.classList.add('question');
+        div.innerHTML = `<p>${q.question}</p>` + q.options.map(opt => `
+          <label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label><br>`).join('');
+        container.appendChild(div);
+      });
+
+      // Timer otomatis submit setelah 20 menit
+      quizTimer = setTimeout(() => {
+        alert("Waktu habis! Kuis akan otomatis disubmit.");
+        submitQuiz();
+      }, timeLimit);
+
+      // Countdown display
+      let remaining = timeLimit / 1000;
+      const timerDisplay = document.getElementById('timer');
+      timerDisplay.textContent = `Sisa waktu: ${remaining} detik`;
+      countdownInterval = setInterval(() => {
+        remaining--;
+        timerDisplay.textContent = `Sisa waktu: ${remaining} detik`;
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
+    }
+
+    function submitQuiz() {
+      clearTimeout(quizTimer);
+      clearInterval(countdownInterval);
+
+      let score = 0;
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && selected.value === q.answer) {
+          score += 10;
+        }
+      });
+
+      document.getElementById('quizForm').classList.add('hidden');
+      document.getElementById('timer').classList.add('hidden');
+      const resultDiv = document.getElementById('result');
+      resultDiv.classList.remove('hidden');
+
+      const nama = document.getElementById('nama').value;
+      const kelas = document.getElementById('kelas').value;
+      const tahun = document.getElementById('tahun').value;
+      const sekolah = document.getElementById('sekolah').value;
+
+      let message = "";
+      if (score >= 70) {
+        message = "<p style='color: green;'><strong>Selamat!</strong> Anda Sudah Bisa Melanjutkan ke Materi Berikutnya.</p>";
+      } else {
+        message = "<p style='color: red;'><strong>Mohon maaf.</strong> Silakan pelajari kembali materi ini sebelum melanjutkan ke materi berikutnya.</p>";
+      }
+
+      resultDiv.innerHTML = `
+        <h3>Hasil Kuis</h3>
+        <p><strong>Nama:</strong> ${nama}</p>
+        <p><strong>Kelas:</strong> ${kelas}</p>
+        <p><strong>Tahun Ajaran:</strong> ${tahun}</p>
+        <p><strong>Sekolah:</strong> ${sekolah}</p>
+        <p><strong>Skor Anda:</strong> ${score} dari 200</p>
+        ${message}
+      `;
+    }
+  </script>
+</body>
+</html>
